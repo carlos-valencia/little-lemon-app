@@ -17,9 +17,9 @@ struct ReservationForm: View {
                       onEditingChanged: {status in
                 print(status)
             })
-            .onChange(of: customerName) {
+            .onChange(of: customerName, {
                 print(customerName)
-            }
+            })
             .onSubmit({
                 print("Submitted")
             })
