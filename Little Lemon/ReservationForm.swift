@@ -10,6 +10,7 @@ import SwiftUI
 struct ReservationForm: View {
     var body: some View {
         @State var customerName: String = ""
+        @State var phoneNumber: String = ""
         
         Form {
             TextField("Type your name",
@@ -23,6 +24,8 @@ struct ReservationForm: View {
             .onSubmit({
                 print("Submitted")
             })
+            
+            TextField("Type in your phone number", text: $phoneNumber)
         }
     }
 }
