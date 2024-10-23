@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello Little Lemon")
+        Text("Little Lemon")
     }
 }
+
 
 #Preview {
     ContentView()
