@@ -35,11 +35,16 @@ struct ReservationFormView: View {
                         Image(systemName: "")
                     }
                 }
+                
+                Divider()
+                
                 HStack {
                     Text("Enter your name:")
                     Spacer()
                     TextField("Enter your name", text: $name, prompt: Text("Required"))
                 }
+                
+                Divider()
                 
                 HStack {
                     Text("Number of guests")
@@ -48,9 +53,13 @@ struct ReservationFormView: View {
                         .keyboardType(.numberPad)
                 }
                 
+                Divider()
+                
                 HStack {
                     DatePicker("Reservation time", selection: $reservationTime, displayedComponents: [.hourAndMinute])
                 }
+                
+                Spacer()
                 
                 Button("Confirm Reservation") {
                     print("reservation confirmed")
