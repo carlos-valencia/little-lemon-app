@@ -12,6 +12,8 @@ struct ReservationFormView: View {
     
     @State private var firstName: String = ""
     @State private var lastName: String = ""
+    @State private var email: String = ""
+    @State private var phoneNumber: Int?
     @State private var guests: Int = 1
     @State private var reservationDate = Date()
     @State private var reservationTime = Date()
@@ -42,6 +44,19 @@ struct ReservationFormView: View {
                         Text("Last Name:")
                         TextField("Last Name", text: $lastName, prompt: Text("Required"))
                     }
+                    
+                    HStack {
+                        Text("Email")
+                        TextField("Email", text: $email, prompt: Text("Required"))
+                            .keyboardType(.emailAddress)
+                    }
+                    
+                    HStack {
+                        Text("Phone Number")
+                        TextField("Phone Number", value: $phoneNumber, format: .number, prompt: Text("Required"))
+                            .keyboardType(.numberPad)
+                    }
+                    
                 }
                     
                 Section(header: Text("Reservation details")){
@@ -55,12 +70,8 @@ struct ReservationFormView: View {
                 }
                 
                 Section(header: Text("Special Requests")) {
-                    Toggle("Special Requests", isOn: $hasSpecialRequest)
-                    
-                    if hasSpecialRequest {
-                        Text("Leave your special request below. Provide as much detail as needed.")
-                        TextEditor(text: $specialRequest)
-                    }
+                    Text("Leave your special request below. Provide as much detail as needed.")
+                    TextEditor(text: $specialRequest)
                     
                 }
                 
