@@ -10,10 +10,14 @@ import Combine
 
 struct ReservationFormView: View {
     
-    @State private var name: String = ""
-    @State private var numberOfGuests: Int?
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
+    @State private var guests: Int = 1
     @State private var reservationDate = Date()
     @State private var reservationTime = Date()
+    @State private var hasSpecialRequest: Bool = true
+    @State private var specialRequest: String = ""
+    private let specialRequestDefault: String = "Leave your special request here. Provide as much detail as needed."
     let dateRange: ClosedRange<Date> = {
         let calendar = Calendar.current
         let startComppnents = DateComponents()
@@ -24,48 +28,50 @@ struct ReservationFormView: View {
     }()
     
     var body: some View {
-        Form {
-            VStack {
-                
-                HStack {
-                    DatePicker("Reservation date", selection: $reservationDate, displayedComponents: [.date])
-                    Button(action: {
-                        print("checking availability")
-                    }) {
-                        Image(systemName: "")
+        NavigationView {
+            Form {
+                Section(header: Text("Personal Information")){
+                    
+                    HStack {
+                        Text("First Name:")
+                        Spacer()
+                        TextField("First name", text: $firstName, prompt: Text("Required"))
+                    }
+                    
+                    HStack {
+                        Text("Last Name:")
+                        TextField("Last Name", text: $lastName, prompt: Text("Required"))
                     }
                 }
+                    
+                Section(header: Text("Reservation details")){
+                    
+                    Stepper("Number of guests: \(guests) (Max: 10)", value: $guests, in: 1...10)
+                    
+                    DatePicker("Reservation date", selection: $reservationDate, displayedComponents: [.date])
                 
-                Divider()
-                
-                HStack {
-                    Text("Enter your name:")
-                    Spacer()
-                    TextField("Enter your name", text: $name, prompt: Text("Required"))
-                }
-                
-                Divider()
-                
-                HStack {
-                    Text("Number of guests")
-                    Spacer()
-                    TextField("Enter number of guests", value: $numberOfGuests, format: .number, prompt: Text("Required"))
-                        .keyboardType(.numberPad)
-                }
-                
-                Divider()
-                
-                HStack {
                     DatePicker("Reservation time", selection: $reservationTime, displayedComponents: [.hourAndMinute])
+                    
                 }
                 
-                Spacer()
+                Section(header: Text("Special Requests")) {
+                    Toggle("Special Requests", isOn: $hasSpecialRequest)
+                    
+                    if hasSpecialRequest {
+                        Text("Leave your special request below. Provide as much detail as needed.")
+                        TextEditor(text: $specialRequest)
+                    }
+                    
+                }
                 
-                Button("Confirm Reservation") {
-                    print("reservation confirmed")
+                
+                Button(action: {
+                    print("Table reserved")
+                }){
+                    Text("Reserve a table")
                 }
             }
-            .padding(20)
+            .navigationTitle("Reserve a table")
         }
     }
 }
