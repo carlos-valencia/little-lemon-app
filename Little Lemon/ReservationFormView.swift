@@ -16,10 +16,15 @@ struct ReservationFormView: View {
     @State private var phoneNumber: Int?
     @State private var guests: Int = 1
     @State private var reservationDate = Date()
-    @State private var reservationTime = Date()
     @State private var hasSpecialRequest: Bool = true
     @State private var specialRequest: String = ""
-    private let specialRequestDefault: String = "Leave your special request here. Provide as much detail as needed."
+    
+    enum InputType {
+        case String
+        case Email
+        case PhoneNumber
+    }
+    
     let dateRange: ClosedRange<Date> = {
         let calendar = Calendar.current
         let startComppnents = DateComponents()
@@ -31,58 +36,105 @@ struct ReservationFormView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Personal Information")){
+            ZStack (alignment: .bottom){
+                Form {
+                    PersonalInformationSectionView(firstName: $firstName, lastName: $lastName, email: $email, phoneNumber: $phoneNumber)
                     
-                    HStack {
-                        Text("First Name:")
-                        Spacer()
-                        TextField("First name", text: $firstName, prompt: Text("Required"))
-                    }
+                    ReservationDetailsSectionView(guests: $guests, reservationDate: $reservationDate)
                     
-                    HStack {
-                        Text("Last Name:")
-                        TextField("Last Name", text: $lastName, prompt: Text("Required"))
-                    }
-                    
-                    HStack {
-                        Text("Email")
-                        TextField("Email", text: $email, prompt: Text("Required"))
-                            .keyboardType(.emailAddress)
-                    }
-                    
-                    HStack {
-                        Text("Phone Number")
-                        TextField("Phone Number", value: $phoneNumber, format: .number, prompt: Text("Required"))
-                            .keyboardType(.numberPad)
-                    }
-                    
+                    SpecialRequestSectionView(hasSpecialRequest: $hasSpecialRequest, specialRequest: $specialRequest)
                 }
-                    
-                Section(header: Text("Reservation details")){
-                    
-                    Stepper("Number of guests: \(guests) (Max: 10)", value: $guests, in: 1...10)
-                    
-                    DatePicker("Reservation date", selection: $reservationDate, displayedComponents: [.date])
-                
-                    DatePicker("Reservation time", selection: $reservationTime, displayedComponents: [.hourAndMinute])
-                    
-                }
-                
-                Section(header: Text("Special Requests")) {
-                    Text("Leave your special request below. Provide as much detail as needed.")
-                    TextEditor(text: $specialRequest)
-                    
-                }
-                
                 
                 Button(action: {
                     print("Table reserved")
                 }){
-                    Text("Reserve a table")
+                    Text("Confirm Reservation")
+                        .font(.title3)
+                        .padding(8)
                 }
+                .buttonStyle(.borderedProminent)
+                
             }
             .navigationTitle("Reserve a table")
+        }
+        .accentColor(.sageGreen)
+    }
+}
+
+struct SpecialRequestSectionView: View {
+    
+    @Binding var hasSpecialRequest: Bool
+    @Binding var specialRequest: String
+    
+    var body: some View {
+        Section(header: Text("Special Requests")) {
+            Toggle(isOn: $hasSpecialRequest) {
+                Text("Special Requests")
+            }
+            .toggleStyle(SwitchToggleStyle(tint: .sageGreen))
+            NavigationLink("Special Request Details", destination: SpecialRequestView(specialRequest: $specialRequest))
+                .disabled(!hasSpecialRequest)
+            
+        }
+    }
+}
+
+struct ReservationDetailsSectionView: View {
+    
+    @Binding var guests: Int
+    @Binding var reservationDate: Date
+    
+    var body: some View {
+        Section(header: Text("Reservation details")){
+            
+            Stepper("Number of guests: \(guests) (Max: 10)", value: $guests, in: 1...10)
+            
+            DatePicker("Reservation date", selection: $reservationDate, displayedComponents: [.date])
+        
+            DatePicker("Reservation time", selection: $reservationDate, displayedComponents: [.hourAndMinute])
+            
+        }
+    }
+}
+
+struct PersonalInformationSectionView: View {
+    
+    @Binding var firstName: String
+    @Binding var lastName: String
+    @Binding var email: String
+    @Binding var phoneNumber: Int?
+    
+    var body: some View {
+        Section(header: Text("Personal Information")){
+            
+            InputLineView(label: "First Name", value: $firstName)
+            
+            InputLineView(label: "Last Name", value: $lastName)
+            
+            InputLineView(label: "Email", value: $email)
+                .keyboardType(.emailAddress)
+            
+            HStack {
+                Text("Phone Number:")
+                TextField("Phone Number", value: $phoneNumber, format: .number, prompt: Text("Required"))
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.trailing)
+            }
+            
+        }
+    }
+}
+
+struct InputLineView: View {
+    
+    let label: String
+    @Binding var value: String
+    
+    var body: some View {
+        HStack {
+            Text("\(label):")
+            TextField(label, text: $value, prompt: Text("Required"))
+                .multilineTextAlignment(.trailing)
         }
     }
 }
