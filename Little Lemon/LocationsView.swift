@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct LocationsView: View {
     
@@ -27,15 +28,17 @@ struct LocationView: View {
     let location: RestaurantLocation
     
     var body: some View {
-        VStack {
+        VStack (alignment: .leading){
             Text(location.locationName)
                 .font(.title3)
             Text(location.fullAddress)
                 .font(.body)
+                .foregroundColor(.secondary)
         }
         
     }
 }
+
 
 struct RestaurantLocation: Identifiable{
     let id = UUID()
@@ -47,6 +50,9 @@ struct RestaurantLocation: Identifiable{
     }
     var locationName: String {
         "Little Lemon - \(city)"
+    }
+    var image: Image {
+        return Image(city)
     }
     
 }
